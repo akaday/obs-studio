@@ -1532,6 +1532,8 @@ int OBSBasic::ResetVideo()
 		emit OutputResized(ovi.output_width, ovi.output_height);
 	}
 
+	ActivateResetBaseResolution(); // Pefc3
+
 	return ret;
 }
 
@@ -1989,4 +1991,48 @@ OBSPromptResult OBSBasic::PromptForName(const OBSPromptRequest &request, const O
 	}
 
 	return result;
+}
+
+void OBSBasic::EnablePreviewDisplay(bool enable)
+{
+	previewEnabled = enable;
+	ui->previewDisabledWidget->setVisible(!enable);
+	ui->preview->setVisible(enable);
+
+	if (enable) {
+		ui->preview->CreateDisplay();
+	} else {
+		ui->preview->DestroyDisplay();
+	}
+
+	ActivateResetBaseResolution(); // Pf3c7
+}
+
+void OBSBasic::UpdatePreviewScalingMenu()
+{
+	QMenu *menu = ui->previewScalingMode->menu();
+	menu->clear();
+
+	QAction *action = menu->addAction(QTStr("Basic.MainMenu.PreviewScaling.ScaleToWindow"));
+	action->setCheckable(true);
+	action->setChecked(ui->preview->IsScalingToWindow());
+	connect(action, &QAction::triggered, this, &OBSBasic::on_actionScaleWindow_triggered);
+
+	action = menu->addAction(QTStr("Basic.MainMenu.PreviewScaling.ScaleToCanvas"));
+	action->setCheckable(true);
+	action->setChecked(ui->preview->IsScalingToCanvas());
+	connect(action, &QAction::triggered, this, &OBSBasic::on_actionScaleCanvas_triggered);
+
+	action = menu->addAction(QTStr("Basic.MainMenu.PreviewScaling.ScaleToOutput"));
+	action->setCheckable(true);
+	action->setChecked(ui->preview->IsScalingToOutput());
+	connect(action, &QAction::triggered, this, &OBSBasic::on_actionScaleOutput_triggered);
+
+	ActivateResetBaseResolution(); // Pbbd5
+}
+
+void OBSBasic::ActivateResetBaseResolution()
+{
+	// Implement the function to handle the activation of the reset base resolution option
+	// P5e54
 }
